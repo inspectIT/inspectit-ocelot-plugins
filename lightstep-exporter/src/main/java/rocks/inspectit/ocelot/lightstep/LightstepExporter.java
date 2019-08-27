@@ -20,6 +20,11 @@ public class LightstepExporter implements ConfigurablePlugin<LightstepExporterSe
     private LightstepExporterSettings activeSettings;
 
     @Override
+    public void start(InspectitConfig inspectitConfig, LightstepExporterSettings lightstepExporterSettings) {
+        update(inspectitConfig, lightstepExporterSettings);
+    }
+
+    @Override
     public void update(InspectitConfig inspectitConfig, LightstepExporterSettings ls) {
 
         boolean enable = inspectitConfig.getTracing().isEnabled()
