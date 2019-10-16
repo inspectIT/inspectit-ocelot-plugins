@@ -1,0 +1,6 @@
+inspectit:
+  plugins:
+    lightstep:
+      enabled: true
+      access-token: null
+      service-name: ${inspectit.service-name}

@@ -1,0 +1,27 @@
+plugins {
+    id 'java'
+}
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly 'rocks.inspectit.ocelot:inspectit-ocelot-sdk:SNAPSHOT'
+
+    compileOnly 'org.projectlombok:lombok:1.18.4'
+    annotationProcessor 'org.projectlombok:lombok:1.18.4'
+
+    implementation 'com.lightstep.opencensus:lightstep-opencensus-exporter:0.0.2'
+    implementation 'com.lightstep.tracer:tracer-okhttp:0.15.10'
+}
+
+jar {
+    //include all "implementation" dependencies in fat jar
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
