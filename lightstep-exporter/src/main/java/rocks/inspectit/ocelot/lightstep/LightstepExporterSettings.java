@@ -2,9 +2,15 @@ package rocks.inspectit.ocelot.lightstep;
 
 import lombok.Data;
 
+/**
+ * The plugin configuration.
+ */
 @Data
 public class LightstepExporterSettings {
 
+    /**
+     * Whether this exporter is enabled or not.
+     */
     private boolean enabled;
 
     /**
@@ -13,7 +19,7 @@ public class LightstepExporterSettings {
     private String accessToken;
 
     /**
-     * The service name under which traces are published, defaults to inspectit.service-name
+     * The service name under which traces are published, defaults to ${inspectit.service-name}
      */
     private String serviceName;
 }

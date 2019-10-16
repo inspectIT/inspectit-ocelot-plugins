@@ -11,12 +11,21 @@ import rocks.inspectit.ocelot.sdk.OcelotPlugin;
 
 import java.util.Objects;
 
-@OcelotPlugin(value = "lightstep", defaultConfig = "default.yml")
+/**
+ * inspectIT Ocelot plugin for enabling the export of gathered spans to a Lightstep backend.
+ */
 @Slf4j
+@OcelotPlugin(value = "lightstep", defaultConfig = "default.yml")
 public class LightstepExporter implements ConfigurablePlugin<LightstepExporterSettings> {
 
-    private boolean isEnabled = false;
+    /**
+     * Whether the exporter has been enabled.
+     */
+    private boolean enabled = false;
 
+    /**
+     * The currently used settings.
+     */
     private LightstepExporterSettings activeSettings;
 
     @Override
@@ -25,17 +34,17 @@ public class LightstepExporter implements ConfigurablePlugin<LightstepExporterSe
     }
 
     @Override
-    public void update(InspectitConfig inspectitConfig, LightstepExporterSettings ls) {
-
+    public void update(InspectitConfig inspectitConfig, LightstepExporterSettings settings) {
         boolean enable = inspectitConfig.getTracing().isEnabled()
-                && ls.isEnabled()
-                && !StringUtils.isEmpty(ls.getAccessToken());
+                && settings.isEnabled()
+                && !StringUtils.isEmpty(settings.getAccessToken());
+
         //we force a restart if the access token has changed
-        if(isEnabled && (!enable || !Objects.equals(activeSettings, ls))) {
+        if (enabled && (!enable || !Objects.equals(activeSettings, settings))) {
             stop();
         }
-        if(!isEnabled && enable) {
-            start(ls);
+        if (!enabled && enable) {
+            start(settings);
         }
     }
 
@@ -44,23 +53,33 @@ public class LightstepExporter implements ConfigurablePlugin<LightstepExporterSe
         return LightstepExporterSettings.class;
     }
 
-    private void start(LightstepExporterSettings ls) {
+    /**
+     * Starts the exporter.
+     *
+     * @param settings the settings to use
+     */
+    private void start(LightstepExporterSettings settings) {
         try {
             log.info("Starting Lightstep Exporter");
 
-            JRETracer tracer = new JRETracer(new Options.OptionsBuilder()
-                    .withComponentName(ls.getServiceName())
-                    .withAccessToken(ls.getAccessToken())
-                    .build()
-            );
+            Options options = new Options.OptionsBuilder()
+                    .withComponentName(settings.getServiceName())
+                    .withAccessToken(settings.getAccessToken())
+                    .build();
+
+            JRETracer tracer = new JRETracer(options);
+
             LightStepTraceExporter.createAndRegister(tracer);
         } catch (Throwable t) {
             log.error("Error creating Lightstep exporter", t);
         }
-        isEnabled = true;
-        activeSettings = ls;
+        enabled = true;
+        activeSettings = settings;
     }
 
+    /**
+     * Stops the exporter.
+     */
     private void stop() {
         log.info("Stopping Lightstep Exporter");
         try {
@@ -68,7 +87,7 @@ public class LightstepExporter implements ConfigurablePlugin<LightstepExporterSe
         } catch (Throwable t) {
             log.error("Error disabling Lightstep exporter", t);
         }
-        isEnabled = false;
+        enabled = false;
     }
 
 }
