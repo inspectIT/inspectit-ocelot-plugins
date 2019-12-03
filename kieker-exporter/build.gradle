@@ -1,0 +1,30 @@
+// apply plugin: 'java'
+plugins {
+    id 'java'
+}
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly 'rocks.inspectit.ocelot:inspectit-ocelot-sdk:SNAPSHOT'
+
+    compileOnly 'org.projectlombok:lombok:1.18.4'
+    annotationProcessor 'org.projectlombok:lombok:1.18.4'
+
+    compileOnly 'io.opencensus:opencensus-exporter-metrics-util:0.24.0'
+
+    implementation 'javax.jms:javax.jms-api:2.0.1'
+    implementation 'net.kieker-monitoring:kieker:1.13'
+    implementation 'org.apache.activemq:activemq-all:5.15.11'
+}
+
+jar {
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}

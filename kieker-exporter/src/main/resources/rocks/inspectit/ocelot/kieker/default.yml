@@ -1,0 +1,7 @@
+# default configuration for Kieker Plugin
+inspectit:
+  plugins:
+    kieker:
+      enabled: true
+      jms-connection-url: null
+      jms-queue-name: ${inspectit.service-name}
