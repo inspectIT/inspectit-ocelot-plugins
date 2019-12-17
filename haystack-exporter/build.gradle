@@ -1,0 +1,29 @@
+plugins {
+    id 'java'
+}
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly 'rocks.inspectit.ocelot:inspectit-ocelot-sdk:SNAPSHOT'
+
+    compileOnly 'org.projectlombok:lombok:1.18.4'
+    annotationProcessor 'org.projectlombok:lombok:1.18.4'
+
+    implementation 'com.expedia.www:opencensus-exporter-trace-haystack:0.2.4'
+    //manually adding dependencies for haystack, due to an incompatible version error happening otherwise
+    implementation 'io.grpc:grpc-netty-shaded:1.19.0'
+    implementation 'io.grpc:grpc-stub:1.19.0'
+}
+
+jar {
+    //include all "implementation" dependencies in fat jar
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
