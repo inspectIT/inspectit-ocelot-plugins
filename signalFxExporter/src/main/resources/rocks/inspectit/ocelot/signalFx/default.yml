@@ -1,0 +1,7 @@
+inspectit:
+  plugins:
+    signalfx:
+      enabled: true
+      token: null
+      endpoint: https://ingest.signalfx.com
+      reporting-interval: ${inspectit.metrics.frequency}
