@@ -1,0 +1,27 @@
+plugins {
+    id 'java'
+}
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly 'rocks.inspectit.ocelot:inspectit-ocelot-sdk:SNAPSHOT'
+
+    compileOnly 'org.projectlombok:lombok:1.18.4'
+    annotationProcessor 'org.projectlombok:lombok:1.18.4'
+
+    // before building the plugin change the openCensus version to the version used by the InspectIT Ocelot agent
+    implementation 'io.opencensus:opencensus-exporter-stats-signalfx:0.22.1'
+}
+
+jar {
+    //include all "implementation" dependencies in fat jar
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
