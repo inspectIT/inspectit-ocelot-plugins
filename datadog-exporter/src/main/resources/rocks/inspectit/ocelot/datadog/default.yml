@@ -1,0 +1,6 @@
+inspectit:
+  plugins:
+    datadog:
+      enabled: true
+      url: http://localhost:8126/v0.3/traces
+      service-name: ${inspectit.service-name}
