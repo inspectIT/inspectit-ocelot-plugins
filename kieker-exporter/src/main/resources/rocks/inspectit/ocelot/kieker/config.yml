@@ -1,0 +1,47 @@
+# instrumentation for kieker plugin
+instrumentation:
+  data:
+    # using 4 data variables --
+    # 2 for saving the state at the beginning of a trace and 2 to pass the state between spans
+    dummyEoi: {down-propagation: NONE, is-tag: false}
+    dummyEss: {down-propagation: NONE, is-tag: false}
+    executionOrder: {up-propagation: GLOBAL, down-propagation: GLOBAL, is-tag: false}
+    stackDepth: {down-propagation: GLOBAL, is-tag: false}
+
+  rules:
+    # scopes can either be added to this rule via e.g.
+    # kieker_plugin_tracing_rule:
+    #   scopes:
+    #     my-custom-scope: true
+    #
+    # or data variables and actions can be used to add eoi/ess attributes in other
+    kieker_plugin_tracing_rule:
+      tracing:
+        attributes: {eoi: dummyEoi, ess: dummyEss}
+      entry:
+        # increases the counters
+        executionOrder:
+          action: increase_value_by_one
+          data-input: {current: executionOrder}
+        stackDepth:
+          action: increase_value_by_one
+          data-input: {current: stackDepth}
+
+        # save the current state
+        dummyEoi:
+          action: set
+          data-input: {value: executionOrder}
+        dummyEss:
+          action: set
+          data-input: {value: stackDepth}
+
+  actions:
+    # action increasing Integer value by 1
+    increase_value_by_one:
+      input:
+        current: Integer
+      value-body: |
+        if(current == null) {
+          return new Integer(0);
+        }
+        return Integer.valueOf(current.intValue() + 1);
