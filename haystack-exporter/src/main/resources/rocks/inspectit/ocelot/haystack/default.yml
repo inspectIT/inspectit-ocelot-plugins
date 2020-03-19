@@ -1,0 +1,7 @@
+inspectit:
+  plugins:
+    haystack:
+      enabled: true
+      host: null
+      port: 35000
+      service-name: ${inspectit.service-name}
