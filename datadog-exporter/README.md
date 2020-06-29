@@ -7,7 +7,7 @@ The plugin offers the following configuration options, which can be configured j
 ```
 inspectit:
   plugins:
-    lightstep:
+    datadog:
       enabled: (true / false, defaults to true)
       url: (string, defaults to http://localhost:8126/v0.3/traces)
       service-name: (string, defaults to ${inspectit.service-name})
